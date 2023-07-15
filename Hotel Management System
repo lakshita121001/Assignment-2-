@@ -1,0 +1,695 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+
+
+// Class representing a hotel
+class Hotel {
+    private String registrationId;
+    private String name;
+    private String location;
+    private int numberOfRooms;
+    private List<String> facilities;
+    private List<Double>ratings ;
+    private int roomCharge;
+
+    // Constructor
+    public Hotel(String registrationId, String name, String location, int numberOfRooms, List<String> facilities,int roomCharge) {
+        this.registrationId = registrationId;
+        this.name = name;
+        this.location = location;
+        this.numberOfRooms = numberOfRooms;
+        this.facilities = facilities;
+        this.ratings= new ArrayList<>();
+        this.roomCharge= roomCharge;
+    }
+
+    public String getRegistrationId() {
+        return registrationId;
+    }
+
+    public void setRegistrationId(String registrationId) {
+        this.registrationId = registrationId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public int getNumberOfRooms() {
+        return numberOfRooms;
+    }
+     public int getRoomCharge() {
+        return roomCharge;
+    }
+   
+    public int setRoomCharge(int roomCharge) {
+        this.roomCharge = roomCharge;
+    }
+
+
+    public void setNumberOfRooms(int numberOfRooms) {
+        this.numberOfRooms = numberOfRooms;
+    }
+
+    public List<String> getFacilities() {
+        return facilities;
+    }
+
+    public void setFacilities(List<String> facilities) {
+        this.facilities = facilities;
+    }
+    
+    public List<Double> getRatings() {
+        return ratings;
+    }
+
+    
+    public boolean areRoomsAvailable() {
+        return numberOfRooms > 0;
+    }
+
+    // Method to book a room
+   public void bookRoom() {
+    if (areRoomsAvailable()) {
+        setNumberOfRooms(getNumberOfRooms() - 1);
+        System.out.println("Room booked successfully!");
+        boolean paymentSuccess = processPayment();
+        
+        if (paymentSuccess) {
+            System.out.println("Payment successful!");
+        } else {
+            System.out.println("Payment failed. Room booking canceled.");
+            setNumberOfRooms(getNumberOfRooms() + 1); // Add back the booked room
+        }
+    } else {
+        System.out.println("No rooms available in this hotel.");
+    }
+}
+
+    // Method to process  payment
+    private boolean processPayment() {
+        //just the functionality of how the payment process can work
+       Scanner scanner = new Scanner(System.in);
+        System.out.println("Payment Amount: $");
+        System.out.print("Enter payment method (credit card, debit card, cash): ");
+        String paymentMethod = scanner.nextLine();
+
+        // Simulate payment processing based on the payment method
+        switch (paymentMethod.toLowerCase()) {
+            case "credit card":
+            case "debit card":
+                System.out.print("Enter card number: ");
+                String cardNumber = scanner.nextLine();
+                System.out.println("Processing payment...");
+                // Additional logic for card payment processing
+                System.out.println("Payment successful!");
+               return true;
+               
+            case "cash":
+                System.out.println("Please make the payment in cash at the hotel counter.");
+               return true;
+          
+            default:
+                System.out.println("Invalid payment method. Payment failed.");
+                return false ;
+              
+        }
+    }
+}
+
+
+// Class representing a user
+class User {
+    private String registrationId;
+    private String username;
+
+    // Constructor
+    public User(String registrationId, String username) {
+        this.registrationId = registrationId;
+        this.username = username;
+    }
+
+    public String getRegistrationId() {
+        return registrationId;
+    }
+
+    public void setRegistrationId(String registrationId) {
+        this.registrationId = registrationId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    // User actions
+
+    public static User register() {
+     Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter age: ");
+        int age = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        // Generate a random registration ID
+        String registrationId = generateRegistrationId();
+
+        User user = new User(username, registrationId, age);
+        System.out.println("Registration successful. Your registration ID is: " + registrationId);
+
+        return user;
+    }
+   
+     private static String generateRegistrationId() {
+        Random random = new Random();
+        int registrationNumber = random.nextInt(10000);
+        return "REG" + String.format("%04d", registrationNumber);
+    }
+    
+    
+    public void searchHotels(List<Hotel> hotels) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Search Hotels:");
+        System.out.println("Available Criteria: ");
+        System.out.println("1. Car Parking");
+        System.out.println("2. Spa");
+        System.out.println("3. Internet");
+        System.out.print("Enter the criteria number to search hotels: ");
+        int criteria = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        List<Hotel> filteredHotels = new ArrayList<>();
+
+        switch (criteria) {
+            case 1: // Car Parking
+                System.out.print("Enter 'yes' if car parking is required: ");
+                String parkingRequired = scanner.nextLine();
+                for (Hotel hotel : hotels) {
+                    if (hotel.getFacilities().contains("Car Parking") && parkingRequired.equalsIgnoreCase("yes")) {
+                        filteredHotels.add(hotel);
+                    }
+                }
+                break;
+            case 2: // Spa
+                System.out.print("Enter 'yes' if spa is required: ");
+                String spaRequired = scanner.nextLine();
+                for (Hotel hotel : hotels) {
+                    if (hotel.getFacilities().contains("Spa") && spaRequired.equalsIgnoreCase("yes")) {
+                        filteredHotels.add(hotel);
+                    }
+                }
+                break;
+            case 3: // Internet
+                System.out.print("Enter 'yes' if internet is required: ");
+                String internetRequired = scanner.nextLine();
+                for (Hotel hotel : hotels) {
+                    if (hotel.getFacilities().contains("Internet") && internetRequired.equalsIgnoreCase("yes")) {
+                        filteredHotels.add(hotel);
+                    }
+                }
+                break;
+            default:
+                System.out.println("Invalid criteria number.");
+                return;
+        }
+
+        if (filteredHotels.isEmpty()) {
+            System.out.println("No hotels found matching the selected criteria.");
+        } else {
+            System.out.println("Hotels matching the selected criteria:");
+            for (Hotel hotel : filteredHotels) {
+                System.out.println("Hotel Name: " + hotel.getName());
+                System.out.println("Hotel Name: " + hotel.getRegistrationId());
+                System.out.println("Facilities: " + hotel.getFacilities());
+                System.out.println("Number of Rooms: " + hotel.getNumberOfRooms());
+                System.out.println("Average room charge  " + hotel.getRoomCharge());
+                System.out.println();
+            }
+        }
+    }
+
+    public void bookHotel(List<Hotel> hotels) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter hotel registration ID: ");
+        String hotelRegistrationId = scanner.nextLine();
+
+        for (Hotel hotel : hotels) {
+            if (hotel.getRegistrationId().equalsIgnoreCase(hotelRegistrationId)) {
+                    hotel.bookRoom();
+                    return;
+            }
+        }
+
+        System.out.println("Hotel not found.");
+    }
+
+    public void modifyDetails() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter new username: ");
+        String newUsername = scanner.nextLine();
+        setUsername(newUsername);
+        System.out.println("Username updated successfully!");
+    }
+
+    // Additional features
+public void provideFeedback(List<Hotel> hotels) {
+    Scanner scanner = new Scanner(System.in);
+    System.out.print("Enter hotel registration ID: ");
+    String registrationId = scanner.nextLine();
+
+    Hotel bookedHotel = null;
+
+    for (Hotel hotel : hotels) {
+        if (hotel.getRegistrationId().equals(registrationId)) {
+            bookedHotel = hotel;
+            break;
+        }
+    }
+
+    if (bookedHotel != null) {
+        System.out.print("Enter your feedback (worst, not so good, good, very good, excellent): ");
+        String feedback = scanner.nextLine();
+
+        double rating;
+        switch (feedback.toLowerCase()) {
+            case "worst":
+                rating = 1.0;
+                break;
+            case "not so good":
+                rating = 2.0;
+                break;
+            case "good":
+                rating = 3.0;
+                break;
+            case "very good":
+                rating = 4.0;
+                break;
+            case "excellent":
+                rating = 5.0;
+                break;
+            default:
+                System.out.println("Invalid feedback.");
+                return;
+        }
+
+        bookedHotel.getRatings().add(rating);
+        System.out.println("Thank you for your feedback!");
+    } else {
+        System.out.println("Hotel not found or you have not booked this hotel.");
+    }
+}
+}
+
+// Class representing a hotel agent
+
+class HotelAgent  {
+    private String registrationId;
+    private String agentName;
+
+    public HotelAgent(String registrationId, String agentName) {
+        this.registrationId = registrationId;
+        this.agentName = agentName;
+    }
+
+    public String getRegistrationId() {
+        return registrationId;
+    }
+
+    public void setRegistrationId(String registrationId) {
+        this.registrationId = registrationId;
+    }
+
+    public String getAgentName() {
+        return agentName;
+    }
+
+    public void setAgentName(String agentName) {
+        this.agentName = agentName;
+    }
+
+    // Hotel agent actions
+
+    public static HotelAgent register(String registrationId) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter agent name: ");
+        String agentName = scanner.nextLine();
+
+        return new HotelAgent(registrationId, agentName);
+    }
+
+    public void addHotel(List<Hotel> hotels) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter hotel registration ID: ");
+        String hotelRegistrationId = scanner.nextLine();
+        //check weather the hotel is already present into the list 
+        for (Hotel hotel : hotels) {
+        if (hotel.getRegistrationId().equalsIgnoreCase(hotelRegistrationId)) {
+            System.out.println("A hotel with the same registration ID already exists.");
+            return; 
+        }
+    }
+        System.out.print("Enter hotel name: ");
+        String hotelName = scanner.nextLine();
+        System.out.print("Enter hotel location: ");
+        String location = scanner.nextLine();
+        System.out.print("Enter number of rooms: ");
+        int numberOfRooms = scanner.nextInt();
+        System.out.print("Average charge of a room: ");
+        int roomCharge = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+        System.out.print("Enter facilities (comma-separated): ");
+        String facilitiesStr = scanner.nextLine();
+        String[] facilitiesArr = facilitiesStr.split(",");
+        List<String> facilities = new ArrayList<>();
+        for (String facility : facilitiesArr) {
+            facilities.add(facility.trim());
+        }
+        Hotel hotel = new Hotel(hotelRegistrationId, hotelName, location, numberOfRooms,roomCharge, facilities);
+       // Request approval from the administrator
+        Administrator administrator = new Administrator();
+        if (administrator.approveHotelDetails(hotel)) {
+            hotels.add(hotel);
+            System.out.println("Hotel details added successfully!");
+          
+        } else {
+            System.out.println("Hotel details not approved by the administrator.");
+            
+        }
+    }
+
+    public void updateHotel(List<Hotel> hotels) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter hotel registration ID to update: ");
+        String hotelRegistrationId = scanner.nextLine();
+        boolean hotelUpdated = false;
+        for (Hotel hotel : hotels) {
+            if (hotel.getRegistrationId().equalsIgnoreCase(hotelRegistrationId)) {
+                System.out.print("Enter updated hotel name: ");
+                String updatedName = scanner.nextLine();
+                System.out.print("Enter updated hotel location: ");
+                String updatedLocation = scanner.nextLine();
+                System.out.print("Enter updated number of rooms: ");
+                int updatedNumberOfRooms = scanner.nextInt();
+                System.out.print("Enter room charges : ");
+                int updatedRoomCharge = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline character
+                System.out.print("Enter updated facilities (comma-separated): ");
+                String updatedFacilitiesStr = scanner.nextLine();
+                String[] updatedFacilitiesArr = updatedFacilitiesStr.split(",");
+                List<String> updatedFacilities = new ArrayList<>();
+                for (String facility : updatedFacilitiesArr) {
+                    updatedFacilities.add(facility.trim());
+                }
+                hotel.setName(updatedName);
+                hotel.setLocation(updatedLocation);
+                hotel.setNumberOfRooms(updatedNumberOfRooms);
+                 hotel.setRoomCharge(updatedRoomCharge);
+                hotel.setFacilities(updatedFacilities);
+                hotelUpdated = true;
+                System.out.println("Hotel details updated successfully!");
+                break;
+            }
+        }
+        if (!hotelUpdated) {
+            System.out.println("Hotel not found.");
+        }
+    }
+
+}
+
+// Class representing an administrator
+class Administrator {
+
+     public boolean approveHotelDetails(Hotel hotel) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Hotel details for approval:");
+        System.out.println("Hotel Registration ID: " + hotel.getRegistrationId());
+        System.out.println("Hotel Name: " + hotel.getName());
+        System.out.println("Hotel Location: " + hotel.getLocation());
+        System.out.println("Number of Rooms: " + hotel.getNumberOfRooms());
+        System.out.println("Facilities: " + hotel.getFacilities());
+        System.out.print("Do you approve the hotel details? (yes/no): ");
+        String approval = scanner.nextLine();
+
+        return approval.equalsIgnoreCase("yes");
+    }
+
+    public void deleteUsers(List<User> users) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter user registration ID to delete: ");
+        String userRegistrationId = scanner.nextLine();
+        boolean userFound = false;
+        for (User user : users) {
+            if (user.getRegistrationId().equalsIgnoreCase(userRegistrationId)) {
+                users.remove(user);
+                userFound = true;
+                break;
+            }
+        }
+        if (userFound) {
+            System.out.println("User details deleted.");
+        } else {
+            System.out.println("User not found.");
+        }
+    }
+
+    public void deleteHotels(List<Hotel> hotels) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter hotel registration ID to delete: ");
+        String hotelRegistrationId = scanner.nextLine();
+        boolean hotelFound = false;
+        for (Hotel hotel : hotels) {
+            if (hotel.getRegistrationId().equalsIgnoreCase(hotelRegistrationId)) {
+                hotels.remove(hotel);
+                hotelFound = true;
+                break;
+            }
+        }
+        if (hotelFound) {
+            System.out.println("Hotel details deleted.");
+        } else {
+            System.out.println("Hotel not found.");
+        }
+    }
+}
+
+ class Main {
+    public static void main(String[] args) {
+        List<Hotel> hotels = new ArrayList<>();
+        List<User> users = new ArrayList<>();
+        List<HotelAgent> agents = new ArrayList<>();
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter your role (1 = User, 2 = Hotel Agent, 3 = Administrator): ");
+        int role = scanner.nextInt();
+        scanner.nextLine(); 
+
+        switch (role) {
+            case 1:
+                System.out.print("Enter user registration ID: ");
+                String userRegistrationId = scanner.nextLine();
+                User user = findUser(users, userRegistrationId);
+
+                if (user == null) {
+                    System.out.println("User not registered. Please register first.");
+                    user = User.register();
+                    users.add(user);
+                    System.out.println("User registration successful.");
+                } else {
+                    System.out.println("User " + user.getUsername() + " logged in.");
+                }
+
+                // Perform user actions
+                userActions(user, hotels);
+                break;
+
+            case 2:
+                System.out.print("Enter agent registration ID: ");
+                String agentRegistrationId = scanner.nextLine();
+                HotelAgent agent = findAgent(agents, agentRegistrationId);
+
+                if (agent == null) {
+                    System.out.println("Agent not registered. Please register first.");
+                    agent = HotelAgent.register(agentRegistrationId);
+                    agents.add(agent);
+                    System.out.println("Agent registration successful.");
+                } else {
+                    System.out.println("Agent " + agent.getAgentName() + " logged in.");
+                }
+
+                // Perform hotel agent actions
+                agentActions(agent, hotels);
+                break;
+
+            case 3:
+                Administrator admin = new Administrator();
+
+                // Perform administrator actions
+                adminActions(admin, hotels, users);
+                break;
+
+            default:
+                System.out.println("Invalid role.");
+        }
+    }
+
+    private static User findUser(List<User> users, String registrationId) {
+        for (User user : users) {
+            if (user.getRegistrationId().equalsIgnoreCase(registrationId)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    private static HotelAgent findAgent(List<HotelAgent> agents, String registrationId) {
+        for (HotelAgent agent : agents) {
+            if (agent.getRegistrationId().equalsIgnoreCase(registrationId)) {
+                return agent;
+            }
+        }
+        return null;
+    }
+
+    private static void userActions(User user, List<Hotel> hotels) {
+        Scanner scanner = new Scanner(System.in);
+        int option;
+
+        do {
+            System.out.println("User Actions:");
+            System.out.println("1. Search Hotels");
+            System.out.println("2. Book Hotel");
+            System.out.println("3. Modify Details");
+            System.out.println("4. Provide Feedback");
+            System.out.println("0. Exit");
+            System.out.print("Enter your choice: ");
+            option = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            switch (option) {
+                case 1:
+                    user.searchHotels(hotels);
+                    break;
+                case 2:
+                    user.bookHotel(hotels);
+                    break;
+                case 3:
+                    user.modifyDetails();
+                    break;
+                case 4:
+                    user.provideFeedback(hotels);
+                    break;
+                case 0:
+                    System.out.println("Exiting User Actions...");
+                    break;
+                default:
+                    System.out.println("Invalid choice.");
+            }
+
+            System.out.println();
+        } while (option != 0);
+    }
+
+    private static void agentActions(HotelAgent agent, List<Hotel> hotels) {
+        Scanner scanner = new Scanner(System.in);
+        int option;
+
+        do {
+            System.out.println("Hotel Agent Actions:");
+            System.out.println("1. Add Hotel");
+            System.out.println("2. Update Hotel");
+            System.out.println("0. Exit");
+            System.out.print("Enter your choice: ");
+            option = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            switch (option) {
+                case 1:
+                    agent.addHotel(hotels);
+                    break;
+                case 2:
+                    agent.updateHotel(hotels);
+                    break;
+                case 0:
+                    System.out.println("Exiting Hotel Agent Actions...");
+                    break;
+                default:
+                    System.out.println("Invalid choice.");
+            }
+
+            System.out.println();
+        } while (option != 0);
+    }
+
+    private static void adminActions(Administrator admin, List<Hotel> hotels, List<User> users) {
+        Scanner scanner = new Scanner(System.in);
+        int option;
+
+        do {
+            System.out.println("Administrator Actions:");
+            System.out.println("1. Approve Hotel Details");
+            System.out.println("2. Delete Users");
+            System.out.println("3. Delete Hotels");
+            System.out.println("0. Exit");
+            System.out.print("Enter your choice: ");
+            option = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            switch (option) {
+                case 1:
+                   System.out.print("Enter hotel registration ID to approve: ");
+                    String hotelRegistrationId = scanner.nextLine();
+                    Hotel hotelToApprove = findHotel(hotels, hotelRegistrationId);
+                    if (hotelToApprove != null) {
+                        if (admin.approveHotelDetails(hotelToApprove)) {
+                            System.out.println("Hotel details approved.");
+                        } 
+                        }
+                     else {
+                        System.out.println("Hotel not found.");
+                    }
+                    break;
+                case 2:
+                    admin.deleteUsers(users);
+                    break;
+                case 3:
+                    admin.deleteHotels(hotels);
+                    break;
+                case 0:
+                    System.out.println("Exiting Administrator Actions...");
+                    break;
+                default:
+                    System.out.println("Invalid choice.");
+            }
+
+            System.out.println();
+        } while (option != 0);
+    }
+      
+        private static Hotel findHotel(List<Hotel> hotels, String registrationId) {
+        for (Hotel hotel : hotels) {
+            if (hotel.getRegistrationId().equalsIgnoreCase(registrationId)) {
+                return hotel;
+            }
+        }
+        return null;
+ }
+}
